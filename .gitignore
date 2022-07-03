@@ -1,3 +1,7 @@
+### venv ###
+.env
+
+
 ### macOS ###
 # General
 .DS_Store
@@ -121,3 +125,4 @@ rest-client.private.env.json
 .idea/**/markdown-navigator.xml
 .idea/**/markdown-navigator-enh.xml
 .idea/**/markdown-navigator/
+
