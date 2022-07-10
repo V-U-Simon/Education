@@ -1,22 +1,29 @@
+from __future__ import annotations
 import re
-from pprint import pprint
 from time import sleep
 from random import randint
 import traceback
-
+from typing import NamedTuple
+from datetime import datetime
 import requests
 import json
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 from collections import namedtuple
 
-Vacancy = namedtuple('Vacancy', 'position, position_link, company, company_link, location, salary, currency')
+# from pprint import pprint
 
 
-class HH_Selectors:
-    def __init__(self):
+Vacancy = namedtuple('Vacancy',
+                     'position_id, position, position_link, company, company_link, location, salary, currency, date')
+
+
+class HeadHunter:
+
+    def __init__(self, http_params):
+        # SELECTORS
+        # super().__init__()
         self._selector_end_pages = '.pager a:last-child'
-
         self._selector_content_list = '[id$=main-content] [class$=item-body]'
         self._selector_position = 'a[data-qa*=title]'
         self._selector_position_link = 'a[data-qa*=title]'
@@ -25,84 +32,66 @@ class HH_Selectors:
         self._selector_location = '[data-qa$=serp__vacancy-address]'
         self._selector_salary_set = ':first-child span[data-qa]'
 
+        # HTTP
+        self._http_headers = {'User-Agent': UserAgent().chrome}
+        self._search_position = http_params
+        self._url = 'https://hh.ru/search/vacancy/'
+        self._page = 0
 
-class HeadHunter(HH_Selectors):
+        # HTML
+        self.vacancies = None
+        self._html_dom = None
+        self._html = None
 
-    def __init__(self, search_position):
-        # SELECTORS
-        super().__init__()
-
-        # MAIN FLOW
-        self.url = 'https://hh.ru/search/vacancy/'
-        self.last_page = False
-        self.http_header = {'User-Agent': UserAgent().chrome}
-        self.http_params = {'page': 1,
-                            'text': search_position,  # search query
-                            'items_on_page': 20}
-
+        # Session
         self.http_session = requests.session()
 
-        while not self.last_page:
+    # MAIN
+    @property
+    def vacancy_list(self):
+        while True:
             # http request
-            print(self.http_params['page'])  # progress bar
-            self.html = self.html_request()
-            self.http_params['page'] += 1
             sleep(randint(1, 3))
+            self._page += 1
+            response = self.request_get(self._page)
+            if not response.ok:
+                # todo: print to log
+                continue
+
+            # progress bar
+            print(self._page)
 
             # parse
-            self.parse_content()
-            self.vacancy = self.parse_content_vacancy()
-            for v in self.vacancy:
-                self.safe(v, 'vacancy.json')
-            # if self.last_page:
-            #     self.last_page = True
+            self._html = response.text
+            self._html_dom = BeautifulSoup(self._html, features='lxml')
+            self.vacancies = self.get_parsed_data(self._html_dom)
 
-    def html_request(self):
-        # url, search, http_header, http_params={}
-        """ Make request, get html """
-        response = self.http_session.get(self.url,
-                                         headers=self.http_header,
-                                         params=self.http_params)
-        self.html_url = response.url
-        # print(f'http request by url: {self.html_url}')
-        return response.text
+            for vacancy in self.vacancies:
+                yield vacancy
+                # self.safe(v, 'vacancy.json')
 
-    def parse_content(self):
-        self.html_dom = BeautifulSoup(self.html, features='lxml')
-        self.content_list = self.html_dom.select(self._selector_content_list)
-        # проверяет наличие ссылки на последнюю страницу (по умолчанию False)
-        self.last_page = not bool(self.html_dom.select_one(self._selector_end_pages))
+            if not self.is_last_page:
+                break
 
-    def parse_content_vacancy(self):
-        """ get content from DOM """
-        # SELECTORS
-        for content in self.content_list:
-            try:
-                position = content.select_one(self._selector_position).text
-                position_link = content.select_one(self._selector_position_link).get('href')
-                company = content.select_one(self._selector_company).get_text(separator=' ', strip=True)
-                company_link = 'https://hh.ru' + content.select_one(self._selector_company_link).get('href')
-                location = content.select_one(self._selector_location).get_text(separator=' ', strip=True)
-                salary_set = content.select_one(self._selector_salary_set)
+    # HTTP
+    def request_get(self, page: int) -> requests.Response:
+        return self.http_session.get(self._url,
+                                     headers=self._http_headers,
+                                     params={'page': page,
+                                             'text': self._search_position,  # search query
+                                             'items_on_page': 20})
 
-                salary, currency = HeadHunter.__parse_salary(salary_set)
-
-                yield Vacancy(position, position_link, company, company_link, location, salary, currency)
-            except Exception as e:
-                print(f'parse error on {self.html_url}: {e}')
-                print("traceback.print_exc():")
-                traceback.print_exc()
-                print("____")
+    # PARSE
+    @property
+    def is_last_page(self) -> bool:
+        if self._html_dom.select_one(self._selector_end_pages):
+            return True
+        return False
 
     @staticmethod
-    def __parse_salary(salary_set):
-        """ parse salary data """
-        # REGULAR EXPRESSION
-        pattern_currency = re.compile(r'\w+.?$')
-        pattern_salary = re.compile(r'\d+')
-
+    def _parse_salary(salary_set, pattern_currency, pattern_salary):
         if salary_set:
-            salary_set = salary_set.text.replace('\u202f', '')
+            salary_set = salary_set.text.replace('\u202f', '')  # todo: посмотреть как сделал при кодировке
 
             currency = re.search(pattern_currency, salary_set)[0]
             salary = re.findall(pattern_salary, salary_set)
@@ -121,22 +110,54 @@ class HeadHunter(HH_Selectors):
         # currency = None if not currency else currency.replace('.', '')
         return salary, currency
 
-    # JSON Save
-    def safe(self, data, file_name):
-        """ сохряняем в json """
-        encoding = "utf-8"
-        with open(file_name, 'a+', encoding=encoding) as f:
-            to_save = json.dumps(data)
-            f.write(to_save + '\n')
-        return True
+    @staticmethod
+    def _parse_id(href, pattern_id):
+        # REGULAR EXPRESSION
+        if href:
+            return int(re.search(pattern_id, href)[0])
 
-    def load(self, file_name):
-        """ загружаем из json """
-        encoding = "utf-8"
+    def get_parsed_data(self, html_dom) -> Vacancy:
+        content_list = html_dom.select(self._selector_content_list)
 
-        with open(file_name, 'r', encoding=encoding) as f:
-            return [json.loads(line) for line in f]
+        # REGULAR EXPRESSION
+        pattern_currency = re.compile(r'\w+.?$')
+        pattern_id = pattern_salary = re.compile(r'\d+')
+
+        for content in content_list:
+            try:
+                position = content.select_one(self._selector_position).text
+                position_link = content.select_one(self._selector_position_link).get('href')
+                position_id = self._parse_id(position_link, pattern_id)
+                company = content.select_one(self._selector_company).get_text(separator=' ', strip=True)
+                company_link = 'https://hh.ru' + content.select_one(self._selector_company_link).get('href')
+                location = content.select_one(self._selector_location).get_text(separator=' ', strip=True)
+                salary_set = content.select_one(self._selector_salary_set)
+                salary, currency = self._parse_salary(salary_set, pattern_currency, pattern_salary)
+                date = datetime.utcnow()
+
+                yield Vacancy(position_id, position, position_link,
+                              company, company_link, location,
+                              salary, currency, date)
+
+            except Exception as e:
+                print(f'parse error on {self._url}: {e}')
+                print("traceback.print_exc():")
+                traceback.print_exc()
+                print("____")
+
+
+# JSON Save
+def json_safe(file_name, data):
+    encoding = "utf-8"
+    with open(file_name, 'a+', encoding=encoding) as f:
+        to_save = json.dumps(data)
+        f.write(to_save + '\n')
+    return True
 
 
 if __name__ == '__main__':
     hh = HeadHunter('python')
+
+    for vacancy in hh.vacancy_list:
+        print(vacancy)
+        json_safe('vacancy.json', vacancy)
