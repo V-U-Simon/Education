@@ -28,7 +28,24 @@
     <script>
       "use strict";
 
-      // Здесь пишем решение, данный комментарий необходимо стереть.
+      const parse = function (number) {
+        const str_number = String(number);
+
+        let str_lenght = str_number.length;
+        const first = str_number.slice(str_lenght - 1, str_lenght);
+
+        str_lenght--;
+        const second = str_number.slice(str_lenght - 1, str_lenght);
+
+        str_lenght--;
+        const third = str_number.slice(str_lenght - 1, str_lenght);
+
+        return `В числе ${number} количество сотен: ${third}, десятков: ${second}, единиц: ${first}`;
+      };
+
+      const number = prompt("write a nubmer");
+      const res = parse(number);
+      alert(res);
     </script>
   </body>
 </html>
