@@ -62,29 +62,60 @@
       "use strict";
 
       /*
-  1. При изменении значения в input с id="from", значение содержащееся в нем
-  должно моментально отображаться в span. То есть при печати в input'е тег span
-  также должен меняться.
-  */
+      1. При изменении значения в input с id="from", значение содержащееся в нем
+      должно моментально отображаться в span. То есть при печати в input'е тег span
+      также должен меняться.
+      */
+      const inputFromEl = document.querySelector("#from");
+      const spanFromEl = document.querySelector("span");
 
-      /*
-  2. При клике на кнопку с классом messageBtn необходимо элементу с классом
-  message:
-  1) добавить два класса: animate__animated и animate__fadeInLeftBig
-  2) поставить данному элементу стиль visibility в значение 'visible'.
-   */
+      inputFromEl.addEventListener("input", doubleInput);
 
+      function doubleInput(event) {
+        spanFromEl.textContent = this.value;
+      }
       /*
-  3. Необходимо при отправке формы проверить, заполнены ли все поля в этой
-  форме. Если какое-либо поле не заполнено, форма не должна отправляться, также
-  должны быть подсвечены незаполненные поля (необходимо поставить класс error
-  незаполненным полям).
-  Как только пользователь начинает заполнять какое-либо поле, необходимо,
-  при вводе в данное поле, произвести проверку:
-  Если поле пустое, необходимо данное поле подсветить (поставить класс error
-  данному полю).
-  Если поле было чем-либо заполнено, подсветку (класс error) необходимо убрать.
-   */
+      2. При клике на кнопку с классом messageBtn необходимо элементу с классом
+      message:
+      1) добавить два класса: animate__animated и animate__fadeInLeftBig
+      2) поставить данному элементу стиль visibility в значение 'visible'.
+       */
+      const messageBtnEl = document.querySelector(".messageBtn");
+      const messageEl = document.querySelector(".message");
+      messageBtnEl.addEventListener("click", addAttributesToMessageBtn);
+
+      function addAttributesToMessageBtn(event) {
+        messageEl.classList.add("animate__animated", "animate__fadeInLeftBig");
+        messageEl.style.visibility = "visible";
+      }
+      /*
+      3. Необходимо при отправке формы проверить, заполнены ли все поля в этой
+      форме. Если какое-либо поле не заполнено, форма не должна отправляться, также
+      должны быть подсвечены незаполненные поля (необходимо поставить класс error
+      незаполненным полям).
+      Как только пользователь начинает заполнять какое-либо поле, необходимо,
+      при вводе в данное поле, произвести проверку:
+      Если поле пустое, необходимо данное поле подсветить (поставить класс error
+      данному полю).
+      Если поле было чем-либо заполнено, подсветку (класс error) необходимо убрать.
+       */
+      const formEl = document.querySelector("form");
+      const checksEls = document.querySelectorAll(".form-control");
+
+      formEl.addEventListener("submit", checkForm);
+
+      function checkForm(event) {
+        checksEls.forEach((el) => {
+          switch (el.value) {
+            case "":
+              el.classList.add("error");
+              event.preventDefault();
+              break;
+            default:
+              el.classList.remove("error");
+          }
+        });
+      }
     </script>
   </body>
 </html>
