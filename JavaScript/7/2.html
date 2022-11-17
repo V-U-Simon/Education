@@ -27,14 +27,14 @@
 
     <script>
       /*
-  1. Программист Паша уволился с работы и не закончил задачу.
-  Задача состояла в том, чтобы при клике на какую-либо кнопку в теге header
-  выводить продукты в div с классом products.
-  Продукты, которые надо вывести, валидны и прописаны в объекте products.
-  Однако, Паша явно сделал много ошибок в других кусках кода, вам необходимо
-  исправить все ошибки и внимательно проверить чтоб код работал правильно и
-  ничего лишнего не выводилось в div с классом products.
-  */
+      1. Программист Паша уволился с работы и не закончил задачу.
+      Задача состояла в том, чтобы при клике на какую-либо кнопку в теге header
+      выводить продукты в div с классом products.
+      Продукты, которые надо вывести, валидны и прописаны в объекте products.
+      Однако, Паша явно сделал много ошибок в других кусках кода, вам необходимо
+      исправить все ошибки и внимательно проверить чтоб код работал правильно и
+      ничего лишнего не выводилось в div с классом products.
+      */
 
       class Product {
         constructor(id, name, price, imageUrl) {
@@ -49,13 +49,13 @@
          */
         getProductMarkup() {
           return `
-        <div class="product">
-            <div>${name}</div>
-            <img src="${imageUrl}" alt="">
-            <div>Цена: <span>${price}</span> р.</div>
-            <a href="https://example.com/producs/${id}">Подробнее</a>
-        </div>
-      `;
+            <div class="product">
+                <div>${this.name}</div>
+                <img src="${this.imageUrl}" alt="">
+                <div>Цена: <span>${this.price}</span> р.</div>
+                <a href="https://example.com/producs/${this.id}">Подробнее</a>
+            </div>
+          `;
         }
       }
 
@@ -122,15 +122,31 @@
         ],
       };
 
-      const productsEl = document.querySelector("products");
-      document.querySelector("header").addEventListener("click", (event) => {
-        if (!event.currentTarget.classList.contains(".menuButton")) {
+      const productsEl = document.querySelector(".products");
+      document.querySelector("header").addEventListener("click", getProduct);
+
+      function getProduct(event) {
+        // удаляем в случае наличия продуктов (во избежания дубликатов)
+        const children = productsEl.children;
+        if (children) {
+          console.log(children);
+          [...children].forEach((ch) => ch.remove());
+        }
+
+        if (event.target.classList.contains(".menuButton")) {
           return;
         }
-        productsEl.innerHTML = products[event.currentTarget.dataset.type].map(
-          (product) => product.getProductMarkup()
+
+        // добавление продукта
+        const productType = event.target.dataset.type;
+        const productContainers = products[productType].map((product) =>
+          product.getProductMarkup()
         );
-      });
+        console.log(productContainers);
+        productContainers.forEach((container) =>
+          productsEl.insertAdjacentHTML("afterbegin", container)
+        );
+      }
     </script>
   </body>
 </html>
