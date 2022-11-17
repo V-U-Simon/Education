@@ -29,7 +29,14 @@
         },
       ];
 
-      // Здесь пишем решение, данный комментарий необходимо стереть.
+      products.forEach((product, index) => {
+        product.price = product.price + product.price * 0.1;
+      });
+
+      console.log(`productsafter update`);
+      products.forEach((product, index) => {
+        console.log(product.price);
+      });
     </script>
   </body>
 </html>
