@@ -39,7 +39,28 @@
         },
       ];
 
-      // Здесь пишем решение, данный комментарий необходимо стереть.
+      let productsWithJpg = products.filter((product) =>
+        checkJpg(product.photos)
+      );
+
+      function checkJpg(arr_property) {
+        if (typeof arr_property !== "undefined" && arr_property.length > 0) {
+          return true;
+        }
+      }
+
+      // let productsWithJpg = products.filter( (product) => {
+      //   if (typeof product.photos !== 'undefined' && product.photos.length > 0) {
+      //       return true
+      //     }
+      //   }
+      // );
+
+      console.log(productsWithJpg);
+
+      console.log(products);
+      products.sort((a, b) => a.price - b.price); // mutate products object
+      console.log(products);
     </script>
   </body>
 </html>
