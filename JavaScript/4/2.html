@@ -47,10 +47,57 @@
 что-нибудь пропустить.
 4. Если непонятно условие - задайте вопрос.
 -->
+
     <script>
       "use strict";
 
-      // Здесь пишем решение, данный комментарий необходимо стереть.
+      class PostES6 {
+        constructor(author, text) {
+          this.author = author;
+          this._text = text;
+          this.date = new Date();
+        }
+
+        set text(newText) {
+          console.log("set triggered!");
+          if (newText) {
+            this._text = newText;
+            this.date = new Date(); // update publish time
+          }
+        }
+
+        get text() {
+          return this._text;
+        }
+
+        edit(newText) {
+          this.text = newText;
+        }
+      }
+
+      class AttachedPostES6 extends PostES6 {
+        constructor(author, post) {
+          super(author, post);
+          this.highlighted = false;
+        }
+
+        makeTextHighlighted() {
+          this.highlighted = true;
+        }
+      }
+
+      let post2 = new PostES6("Max", "This is post2");
+      console.log(post2);
+      post2.edit("This is post2222");
+      console.log(post2);
+
+      console.log("--------------------------------");
+
+      let post3 = new AttachedPostES6("Max", "This is post3");
+      console.log(post3);
+      post3.edit("This is post3333");
+      post3.makeTextHighlighted();
+      console.log(post3);
     </script>
   </body>
 </html>
