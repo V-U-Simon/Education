@@ -32,7 +32,84 @@ Infinity делать не нужно, однако, в случае если б
     <script>
       "use strict";
 
-      // Здесь пишем решение, данный комментарий необходимо стереть.
+      console.log(mathOperation(5, 3, "+")); // 8
+      console.log(mathOperation(5, 3, "-")); // 2
+      console.log(mathOperation(6, 3, "/")); // 2
+      console.log(mathOperation(5, 3, "*")); // 15
+      console.log(mathOperation(5, 3, ":)")); // NaN
+
+      /**
+       *
+       * @param {number} arg1 - первое число.
+       * @param {number} arg2 - второе число.
+       * @param {number} operation - строка, которая содержит один символ из: "+", "-", "*", "/".
+       * @returns {number}
+       */
+      function mathOperation(arg1, arg2, operation) {
+        switch (operation) {
+          case "+":
+            return sum(arg1, arg2);
+            break;
+          case "-":
+            return sub(arg1, arg2);
+            break;
+          case "/":
+            return div(arg1, arg2);
+            break;
+          case "*":
+            return mul(arg1, arg2);
+            break;
+          default:
+            return NaN;
+        }
+      }
+
+      /**
+       * Calculates the summary of two humbers
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function sum(a, b) {
+        return a + b;
+      }
+
+      /**
+       * Is substracted lowest number from bigger number, if this numbers is equal then return zero
+       * функция должна вычесть из большего числа меньшее, либо вернуть 0, если числа равны
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function sub(a, b) {
+        if (a > b) {
+          return a - b;
+        } else if (a < b) {
+          return b - a;
+        } else {
+          return 0;
+        }
+      }
+
+      /**
+       * Calculates the divizion of two humbers
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function div(a, b) {
+        return a / b;
+      }
+
+      /**
+       * Calculates the multiply of two humbers
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function mul(a, b) {
+        return a * b;
+      }
     </script>
   </body>
 </html>
