@@ -31,7 +31,59 @@
     <script>
       "use strict";
 
-      // Здесь пишем решение, данный комментарий необходимо стереть.
+      console.log(sum(2, 6));
+      console.log(sub(2, 6));
+      console.log(sub(6, 2));
+      console.log(sub(2, 2));
+      console.log(div(6, 2));
+      console.log(mul(2, 6));
+
+      /**
+       * Calculates the summary of two humbers
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function sum(a, b) {
+        return a + b;
+      }
+
+      /**
+       * Is substracted lowest number from bigger number, if this numbers is equal then return zero
+       * функция должна вычесть из большего числа меньшее, либо вернуть 0, если числа равны
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function sub(a, b) {
+        if (a > b) {
+          return a - b;
+        } else if (a < b) {
+          return b - a;
+        } else {
+          return 0;
+        }
+      }
+
+      /**
+       * Calculates the divizion of two humbers
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function div(a, b) {
+        return a / b;
+      }
+
+      /**
+       * Calculates the multiply of two humbers
+       * @param {number) a
+       * @param {number) b
+       * @return {number)
+       */
+      function mul(a, b) {
+        return a * b;
+      }
     </script>
   </body>
 </html>
