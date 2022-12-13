@@ -51,26 +51,67 @@
       "use strict";
 
       /*
-  1. Необходимо сделать так, чтобы при клике на элемент с классом "nav-link",
-  данному элементу ставился класс "active", при этом у всхе других элементов с
-  классом nav-link данных элемент отсутствовал, необходимо использовать
-  делегирование события.
-  Также необходимо чтобы в div с классом text ставился нужный текст, который
-  прописан в объекте panelText (вам необходимо определить самостоятельно, что
-  общего между данной в html версткой и объектом ниже).
-  */
+      1. Необходимо сделать так, чтобы при клике на элемент с классом "nav-link",
+      данному элементу ставился класс "active", при этом у всхе других элементов с
+      классом nav-link данных элемент отсутствовал, необходимо использовать
+      делегирование события.
+      Также необходимо чтобы в div с классом text ставился нужный текст, который
+      прописан в объекте panelText (вам необходимо определить самостоятельно, что
+      общего между данной в html версткой и объектом ниже).
+      */
       const panelText = {
         T1: "Уверен, ты справишься с этим заданием!",
         X6: "Знаю, программирование это нелегко.",
         H99: "Однако, программирование, в итоге, принесет свои плоды.",
       };
 
+      const textEl = document.querySelector(".text");
+      const navTabsEl = document.querySelector(".nav-tabs");
+
+      navTabsEl.addEventListener("click", pickNavItem);
+
+      function pickNavItem(event) {
+        // console.dir(event.target);
+        // console.dir();
+        // console.log(event.tagNmae);
+
+        // 1. поиск верхнего элемента с нужным классом
+        // убираем active со всех Li
+
+        // 2. получление этого элемента
+        // 3. добавлем ему класс active
+
+        if (event.target.closest(".nav-link")) {
+          // delete active from all items
+          const navItemEls = document.querySelectorAll(".nav-item > a");
+          navItemEls.forEach((navItemEl) =>
+            navItemEl.classList.remove("active")
+          );
+
+          // add active to picked item
+          event.target.classList.add("active");
+
+          // change Text
+          const markerForText = event.target.closest("li").dataset.text;
+          textEl.textContent = panelText[markerForText];
+        }
+      }
+
       /*
-  2. Необходимо сделать так, чтобы при изменении input'а менялся и размер шрифта
-  у элемента с id="inputDiv". Перемещение ползунка должно плавно увеличивать
-  шрифт у текста, никакого резкого увеличения шрифта не должно быть при
-  перетаскивании ползунка.
-   */
+      2. Необходимо сделать так, чтобы при изменении input'а менялся и размер шрифта
+      у элемента с id="inputDiv". Перемещение ползунка должно плавно увеличивать
+      шрифт у текста, никакого резкого увеличения шрифта не должно быть при
+      перетаскивании ползунка.
+       */
+
+      const inputFontSizeEl = document.querySelector("input");
+      inputFontSizeEl.addEventListener("input", changeFontSize);
+
+      function changeFontSize(event) {
+        const inputDivEl = document.querySelector("#inputDiv");
+        const val = inputFontSizeEl.value;
+        inputDivEl.style.fontSize = `${val}px`;
+      }
     </script>
   </body>
 </html>
