@@ -11,6 +11,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style_basket.css" />
   </head>
 
   <body>
@@ -25,10 +26,23 @@
           <img src="images/bars.png" alt="" />
           <img class="userIcon" src="images/user.png" alt="" />
 
-          <span class="cartIconWrap">
-            <img class="cartIcon" src="images/cart.png" alt="" />
-            <span>5</span>
+          <span class="basketIconWrap">
+            <img class="basketIcon" src="images/basket.png" alt="" />
+            <span>0</span>
           </span>
+          <div class="basket hidden">
+            <div class="basketRow basketHeader">
+              <div>Название товара</div>
+              <div>Количество</div>
+              <div>Цена за шт.</div>
+              <div>Итого</div>
+            </div>
+          
+            <div class="basketTotal">
+              Товаров в корзине на сумму:
+              $<span class="basketTotalValue">0</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -134,13 +148,13 @@
       </div>
 
       <div class="featuredItems">
-        <div class="featuredItem">
+        <div class="featuredItem" data-id="1" data-name="ELLERY X M'O CAPSULE" data-price="52">
           <div class="featuredImgWrap">
             <img src="images/featured/1.jpg" alt="" />
             <div class="featuredImgDark">
               <button>
-                <img src="images/cart.svg" alt="" />
-                Add to Cart
+                <img src="images/basket.svg" alt="" />
+                Add to basket
               </button>
             </div>
           </div>
@@ -155,13 +169,13 @@
           </div>
         </div>
 
-        <div class="featuredItem">
+        <div class="featuredItem" data-id="2" data-name="ELLERY CAPSULE" data-price="502">
           <div class="featuredImgWrap">
             <img src="images/featured/2.jpg" alt="" />
             <div class="featuredImgDark">
               <button>
-                <img src="images/cart.svg" alt="" />
-                Add to Cart
+                <img src="images/basket.svg" alt="" />
+                Add to basket
               </button>
             </div>
           </div>
@@ -176,13 +190,13 @@
           </div>
         </div>
 
-        <div class="featuredItem">
+        <div class="featuredItem" data-id="3" data-name="CAPSULE" data-price="22">
           <div class="featuredImgWrap">
             <img src="images/featured/3.jpg" alt="" />
             <div class="featuredImgDark">
               <button>
-                <img src="images/cart.svg" alt="" />
-                Add to Cart
+                <img src="images/basket.svg" alt="" />
+                Add to basket
               </button>
             </div>
           </div>
@@ -197,13 +211,13 @@
           </div>
         </div>
 
-        <div class="featuredItem">
+        <div class="featuredItem" data-id="4" data-name="ELLERY" data-price="62">
           <div class="featuredImgWrap">
             <img src="images/featured/4.jpg" alt="" />
             <div class="featuredImgDark">
               <button>
-                <img src="images/cart.svg" alt="" />
-                Add to Cart
+                <img src="images/basket.svg" alt="" />
+                Add to basket
               </button>
             </div>
           </div>
@@ -218,13 +232,13 @@
           </div>
         </div>
 
-        <div class="featuredItem">
+        <div class="featuredItem" data-id="5" data-name="X M'OE" data-price="42">
           <div class="featuredImgWrap">
             <img src="images/featured/5.jpg" alt="" />
             <div class="featuredImgDark">
               <button>
-                <img src="images/cart.svg" alt="" />
-                Add to Cart
+                <img src="images/basket.svg" alt="" />
+                Add to basket
               </button>
             </div>
           </div>
@@ -238,13 +252,13 @@
             <div class="featuredPrice">$52.00</div>
           </div>
         </div>
-        <div class="featuredItem">
+        <div class="featuredItem" data-id="6" data-name="EAPSULE" data-price="82">
           <div class="featuredImgWrap">
             <img src="images/featured/6.jpg" alt="" />
             <div class="featuredImgDark">
               <button>
-                <img src="images/cart.svg" alt="" />
-                Add to Cart
+                <img src="images/basket.svg" alt="" />
+                Add to basket
               </button>
             </div>
           </div>
@@ -255,7 +269,7 @@
               Known for her sculptural takes on traditional tailoring,
               Australian arbiter of cool Kym Ellery teams up with Moda Operandi.
             </div>
-            <div class="featuredPrice">$52.00</div>
+            <div class="featuredPrice">$82.00</div>
           </div>
         </div>
       </div>
@@ -349,5 +363,6 @@
     </div>
 
     <script src="app.js"></script>
+    <script src="basket.js"></script>
   </body>
 </html>

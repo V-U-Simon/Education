@@ -36,13 +36,13 @@ body {
 }
 
 .userIcon,
-.cartIcon {
+.basketIcon {
     display: none;
 }
 
 @media (min-width: 768px) {
     .userIcon,
-    .cartIcon {
+    .basketIcon {
         display: inline;
     }
 }
@@ -56,11 +56,11 @@ body {
     margin-left: 41px;
 }
 
-.cartIconWrap {
+.basketIconWrap {
     position: relative;
 }
 
-.cartIconWrap span {
+.basketIconWrap span {
     display: inline-block;
     width: 19px;
     height: 19px;
